@@ -116,7 +116,6 @@ function stitchLogin() {
 const loadOnlineTerms = () => {
   stitchLogin().then(getTerms);
 };
-
 function getTerms() {
   const include = includeSuggestions();
   db.collection("dict").find().then(result => {
@@ -128,6 +127,7 @@ function getTerms() {
     }
     __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["b" /* initialize */](data);
     buildDictionary(data);
+    getTopFiveTerms();
     $("#offline").hide();
   }).catch(err => {
     clear_lodictionary();
@@ -163,21 +163,20 @@ const add = () => {
   });
 };
 const updateCount = () => {
-  const counts = __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["getCounter"]();
-  stitchLogin.login().then(() => {
-    for (const word in counts) {
-      update(word).then(() => {
-        console.log(`${word} count updated`);
+  const counts = __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["a" /* getCounter */]();
+  stitchLogin().then(() => {
+    counts.forEach(word => {
+      update(word).then(res => {
+        console.log(`${word} count updated :`, res);
       }).catch(err => {
         console.log("Failed Update", err);
       });
-    }
+    }, _this);
   });
 };
 const update = term => {
   return db.collection("dict").updateOne({ _id: term }, { $inc: { counts: 1 } }, { upsert: false });
 };
-
 const buildDictionary = () => {
   const include = includeSuggestions();
   const list = document.createElement("ul");
@@ -221,7 +220,7 @@ const buildDictionary = () => {
     document.getElementById("lodictionary").appendChild(note);
   }
 };
-function lodify() {
+const lodify = () => {
   const include = includeSuggestions("include_suggstions_1");
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
@@ -234,17 +233,18 @@ function lodify() {
   } else {
     alert("Oooooppps ! Empty text not allowed.");
   }
-}
+  if (online) {
+    loadOnlineTerms();
+  }
+};
 const rebuildDictionary = () => {
   clear_lodictionary();
   buildDictionary(data);
   __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["d" /* rebuildTable */](data, includeSuggestions("include_suggstions_1"));
 };
-
 const includeSuggestions = () => {
   return document.getElementById("include_suggestions").checked;
 };
-
 const clear_lodictionary = () => {
   try {
     const dict_div = document.getElementById("lodictionary");
@@ -256,8 +256,18 @@ const clear_lodictionary = () => {
     console.log(e);
   }
 };
-
-function reverseLodify() {
+const clearTopFive = () => {
+  try {
+    const top_div = document.getElementById("top_five");
+    // remove the child
+    while (top_div.hasChildNodes()) {
+      top_div.removeChild(top_div.firstChild);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+const reverseLodify = () => {
   const include = includeSuggestions("include_suggstions_1");
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
@@ -270,8 +280,63 @@ function reverseLodify() {
   } else {
     alert("Oooooppps ! Empty text not allowed.");
   }
-}
-
+  if (online) {
+    loadOnlineTerms();
+  }
+};
+const getTopFiveTerms = () => {
+  console.log("updating top 5");
+  const include = includeSuggestions();
+  const consolidated = consolidate(data);
+  consolidated.sort((a, b) => {
+    return b.counts - a.counts;
+  });
+  //get 10 in case suggestins were included
+  const top_five = consolidated.slice(0, 10);
+  console.log("10 :", top_five);
+  clearTopFive();
+  const top = document.createElement("p");
+  // top.className = "dictionary";
+  // top.id = "top_list";
+  let count = 0;
+  top_five.forEach(word => {
+    let approved = word.approved === 1 ? true : false;
+    if (include) {
+      approved = true;
+    }
+    if (approved) {
+      const item = document.createElement("label");
+      let entry = `${word.lodi}`;
+      if (word.approved === 0) {
+        entry = entry + " **";
+      }
+      entry = entry + ` <span class='badge badge-light'>${word.counts}</span>`;
+      // const span = document.createElement("span");
+      // span.className ="badge badge-light";
+      // span.innerText= +word.counts;
+      // item.appendChild(span);
+      item.innerHTML = entry;
+      item.className = "top_five";
+      count += 1;
+      if (count <= 5) {
+        top.appendChild(item);
+      }
+    }
+  });
+  document.getElementById("top_five").appendChild(top);
+};
+const consolidate = () => {
+  let result = [];
+  data.forEach(word => {
+    const found = result.findIndex(i => i.lodi === word.lodi);
+    if (found >= 0) {
+      result[found].counts += word.counts;
+    } else {
+      result.push(word);
+    }
+  });
+  return result;
+};
 const showCheckImage = () => {
   check_image_index = Math.round(Math.random() * 1000 % 9);
   document.getElementById("img_check").style.backgroundRepeat = "no-repeat";
@@ -289,7 +354,6 @@ const verifyCheck = val => {
     return false;
   }
 };
-
 const getOfflineDB = () => {
   const offlineDB = [];
   for (const key in offlineTerms) {
@@ -343,28 +407,30 @@ window.showCheckImage = showCheckImage;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = initialize;
-/* harmony export (immutable) */ __webpack_exports__["d"] = rebuildTable;
-/* harmony export (immutable) */ __webpack_exports__["c"] = lodify;
-/* harmony export (immutable) */ __webpack_exports__["e"] = reverseLodify;
+var _this = this;
+
 const translate_table = new Map();
 const dictionary = [];
 const valid_letter = /^[a-zA-Z]/;
 let translates;
 let counter = [];
-function initialize(data) {
+const initialize = data => {
   // translates= stitch.getAllTerms();
   console.log("translates from db", data);
   data = data.filter(i => i.approved === 1);
   buildTable(data);
-}
-function rebuildTable(data, include) {
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = initialize;
+
+const rebuildTable = (data, include) => {
   if (!include) {
     data = data.filter(i => i.approved === 1);
   }
   translate_table.clear();
   buildTable(data);
-}
+};
+/* harmony export (immutable) */ __webpack_exports__["d"] = rebuildTable;
+
 function buildTable(data) {
   data.forEach(element => {
     translate_table.set(element._id.toLowerCase(), element.lodi);
@@ -376,7 +442,7 @@ function splitAndLower(data) {
   const broken_text = data.trim().split(" ");
   return broken_text.map(word => word.toLowerCase());
 }
-function lodify(data) {
+const lodify = data => {
 
   let result = "";
   const words = splitAndLower(data);
@@ -400,22 +466,23 @@ function lodify(data) {
     // }
     console.log(translated_word);
     result += translated_word + " ";
-  }, this);
+  }, _this);
 
   return result;
-}
-function reverseLodify(data) {
+};
+/* harmony export (immutable) */ __webpack_exports__["c"] = lodify;
+
+const reverseLodify = data => {
 
   let result = "";
   const words = splitAndLower(data);
   counter = [];
 
   words.forEach(element => {
-    console.log("element", element);
     element = element.replace(/[^A-Za-z]/g, "");
     let translated_word = getKey(element);
     console.log("reversi ", translated_word);
-    if (translated_word === undefined) {
+    if (translated_word !== undefined) {
       counter.push(translated_word);
     } else {
       translated_word = element;
@@ -427,15 +494,15 @@ function reverseLodify(data) {
     // if( translated_word.length < element.length ) {
     //    translated_word += element[ element.length - 1];
     // }
-    console.log(translated_word);
     result += translated_word + " ";
-  }, this);
+  }, _this);
   return result;
-}
+};
+/* harmony export (immutable) */ __webpack_exports__["e"] = reverseLodify;
+
 const getKey = word => {
   let foundKey;
   for (const [key, value] of translate_table.entries()) {
-    console.log(key, value);
     if (value.trim().toLowerCase() === word.trim().toLowerCase()) {
       foundKey = key;
       break;
@@ -444,8 +511,11 @@ const getKey = word => {
   return foundKey;
 };
 const getCounter = () => {
+  console.log("Counter :", counter);
   return counter;
 };
+/* harmony export (immutable) */ __webpack_exports__["a"] = getCounter;
+
 
 // export function getOfflineDB() {
 //   const offlineDB = [];
