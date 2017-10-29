@@ -299,20 +299,6 @@ const verifyCheck = (val) => {
     return false;
   }
 }
-// const getOfflineDB = () => {
-//   const offlineDB = [];
-//   for (const key in offlineTerms) {
-//     offlineDB.push({
-//       _id: key,
-//       lodi: offlineTerms[key],
-//       meaning: "",
-//       approved: 1,
-//       count: 0
-//     });
-//   }
-//   console.log("OfflineDB:", offlineDB);
-//   return offlineDB;
-// }
 const getOfflineDB = () => {
   const offlineDB = [];
   localDB.offline_terms.forEach( term => {

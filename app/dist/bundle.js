@@ -71,8 +71,10 @@
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__styles_styles_scss__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__styles_styles_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__styles_styles_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_lodifier__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lodifier__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data__ = __webpack_require__(3);
 var _this = this;
+
 
 
 
@@ -101,7 +103,7 @@ const init = () => {
   $("#offline").show();
   data = getOfflineDB();
   // init the lodifier
-  __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["b" /* initialize */](data);
+  __WEBPACK_IMPORTED_MODULE_1__lodifier__["b" /* initialize */](data);
   //show dictionary
   buildDictionary(data);
   // try to get online data
@@ -125,7 +127,7 @@ function getTerms() {
       data = getOfflineDB();
       $("#offline").show();
     }
-    __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["b" /* initialize */](data);
+    __WEBPACK_IMPORTED_MODULE_1__lodifier__["b" /* initialize */](data);
     buildDictionary(data);
     getTopTerms();
     $("#offline").hide();
@@ -138,14 +140,17 @@ function getTerms() {
   });
 }
 const addTerm = (term, lodi) => {
-  return db.collection("dict").insertOne({ _id: term, lodi: lodi, meaning: "", approved: 0, counts: 0 });
+  return db.collection("dict").insertOne({ _id: term, lodi: lodi, example: "", approved: 0, count: 0, flagged: 0 });
 };
 const add = () => {
   const lodi = document.getElementById("new_term").value;
   const term = document.getElementById("equivalent").value;
+  // remove invalid chars
+  term = term.replace(/[^A-Za-z]/g, "");
+  lodi = lodi.replace(/[^A-Za-z]/g, "");
   console.log(term + "|" + lodi);
   stitchLogin().then(() => {
-    addTerm(term, lodi).then(() => {
+    addTerm(term.toLowerCase(), lodi.toLowerCase()).then(() => {
       console.log("Adding Done");
       document.getElementById("equivalent").value = "";
       document.getElementById("new_term").value = "";
@@ -163,7 +168,7 @@ const add = () => {
   });
 };
 const updateCount = () => {
-  const counts = __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["a" /* getCounter */]();
+  const counts = __WEBPACK_IMPORTED_MODULE_1__lodifier__["a" /* getCounter */]();
   stitchLogin().then(() => {
     counts.forEach(word => {
       update(word).then(res => {
@@ -175,7 +180,7 @@ const updateCount = () => {
   });
 };
 const update = term => {
-  return db.collection("dict").updateOne({ _id: term }, { $inc: { counts: 1 } }, { upsert: false });
+  return db.collection("dict").updateOne({ _id: term }, { $inc: { count: 1 } }, { upsert: false });
 };
 const buildDictionary = () => {
   const include = includeSuggestions();
@@ -225,7 +230,7 @@ const lodify = () => {
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
   if (clear.trim().length > 0) {
-    const lodified = __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["c" /* lodify */](clear);
+    const lodified = __WEBPACK_IMPORTED_MODULE_1__lodifier__["c" /* lodify */](clear);
     document.getElementById("result_text").innerHTML = lodified;
     document.getElementById("result_text").className = "p-2 lodified";
     $("#result_div").show();
@@ -240,7 +245,7 @@ const lodify = () => {
 const rebuildDictionary = () => {
   clear_lodictionary();
   buildDictionary(data);
-  __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["d" /* rebuildTable */](data, includeSuggestions());
+  __WEBPACK_IMPORTED_MODULE_1__lodifier__["d" /* rebuildTable */](data, includeSuggestions());
 };
 const includeSuggestions = () => {
   return document.getElementById("include_suggestions").checked;
@@ -272,7 +277,7 @@ const reverseLodify = () => {
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
   if (clear.trim().length > 0) {
-    const lodified = __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["e" /* reverseLodify */](clear);
+    const lodified = __WEBPACK_IMPORTED_MODULE_1__lodifier__["e" /* reverseLodify */](clear);
     document.getElementById("result_text").innerHTML = lodified;
     document.getElementById("result_text").className = "p-2 lodified";
     $("#result_div").show();
@@ -285,19 +290,24 @@ const reverseLodify = () => {
   }
 };
 const getTopTerms = () => {
-  console.log("updating top list");
+  console.log("Updating top list");
   const include = includeSuggestions();
   let consolidated = consolidate(data);
-  consolidated = consolidated.slice(0, 15);
   consolidated.sort((a, b) => {
-    return b.counts - a.counts;
+    return b.count - a.count;
   });
+  consolidated = consolidated.slice(0, 15);
   console.log("Consolidated :", consolidated);
   clearTopList();
   const top = document.createElement("p");
   // top.className = "dictionary";
   // top.id = "top_list";
   let count = 0;
+  // let entry = "<span class='badge badge-light'>top terms :</span>"
+  const label = document.createElement("label");
+  label.innerHTML = "<span class='badge badge-light'>top </span> terms: ";
+  label.className = "top_five";
+  top.appendChild(label);
   consolidated.forEach(word => {
     let approved = word.approved === 1 ? true : false;
     if (include) {
@@ -309,7 +319,7 @@ const getTopTerms = () => {
       if (word.approved === 0) {
         entry = entry + " **";
       }
-      entry = entry + ` <span class='badge badge-light'>${word.counts}</span>`;
+      entry = entry + ` <span class='badge badge-light'>${word.count}</span>`;
       // const span = document.createElement("span");
       // span.className ="badge badge-light";
       // span.innerText= +word.counts;
@@ -317,19 +327,19 @@ const getTopTerms = () => {
       item.innerHTML = entry;
       item.className = "top_five";
       count += 1;
-      if (count <= 10 || word.counts >= 0) {
+      if (count <= 10 && word.count > 0) {
         top.appendChild(item);
       }
     }
   });
-  document.getElementById("top_five").appendChild(top);
+  document.getElementById("top_list").appendChild(top);
 };
 const consolidate = () => {
   let result = [];
   data.forEach(word => {
     const found = result.findIndex(i => i.lodi === word.lodi);
     if (found >= 0) {
-      result[found].counts += word.counts;
+      result[found].count += word.count;
     } else {
       result.push(word);
     }
@@ -345,7 +355,6 @@ const showCheckImage = () => {
 };
 const verifyCheck = val => {
   const checks = { 0: 30, 1: 23, 2: 15, 3: 36, 4: 9, 5: 86, 6: 11, 7: 35, 8: 44, 9: 52 };
-  console.log(data);
   console.log(checks[check_image_index]);
   if (checks[check_image_index] === +data) {
     return true;
@@ -355,15 +364,17 @@ const verifyCheck = val => {
 };
 const getOfflineDB = () => {
   const offlineDB = [];
-  for (const key in offlineTerms) {
+  __WEBPACK_IMPORTED_MODULE_2__data__["a" /* offline_terms */].forEach(term => {
     offlineDB.push({
-      _id: key,
-      lodi: offlineTerms[key],
-      meaning: "",
-      approved: 1,
-      counts: 0
+      _id: term._id,
+      lodi: term.lodi,
+      example: term.example,
+      count: term.count,
+      approved: term.approved,
+      type: term.type,
+      flagged: term.flagged
     });
-  }
+  });
   console.log("OfflineDB:", offlineDB);
   return offlineDB;
 };
@@ -478,6 +489,7 @@ const reverseLodify = data => {
   counter = [];
 
   words.forEach(element => {
+    console.log(element);
     element = element.replace(/[^A-Za-z]/g, "");
     let translated_word = getKey(element);
     console.log("reversi ", translated_word);
@@ -547,6 +559,15 @@ const getCounter = () => {
 //   ambulance: "ecnalubma",
 //   ambulansya: "ecnalubma"
 // };
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const offline_terms = [{ "_id": "pare", "lodi": "erps", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "pre", "lodi": "erps", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "idol", "lodi": "lodi", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "idols", "lodi": "lodis", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "kain", "lodi": "enka", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "kaen", "lodi": "enka", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "salamat", "lodi": "matsala", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "bro", "lodi": "orb", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "bros", "lodi": "orbs", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "brother", "lodi": "orb", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "brothers", "lodi": "orbs", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "malupit", "lodi": "petmalu", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "malupet", "lodi": "petmalu", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "ambulance", "lodi": "ecnalubma", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "ambulansya", "lodi": "ecnalubma", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "power", "lodi": "werpa", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "pawer", "lodi": "werpa", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "sarap", "lodi": "rapsa", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "busog", "lodi": "sogbu", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "broski", "lodi": "orbski", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "girlfriend", "lodi": "rema", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }, { "_id": "mare", "lodi": "rema", "example": "", "approved": 1, "count": 0, "type": 0, "flagged": 0 }];
+/* harmony export (immutable) */ __webpack_exports__["a"] = offline_terms;
+
 
 /***/ })
 /******/ ]);
