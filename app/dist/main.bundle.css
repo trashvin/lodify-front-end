@@ -1,0 +1,103 @@
+body {
+  background-color: black;
+  /* different techniques for iPad screening */ }
+  body div {
+    border-style: none; }
+    body div.spacer-h-50 {
+      height: 50px; }
+    body div.jumbotron.main {
+      background: whitesmoke; }
+    body div.dictionary {
+      font-family: 'Indie Flower', cursive;
+      font-size: 12pt; }
+    body div.sharing {
+      position: relative;
+      bottom: 25px;
+      padding-right: 5px;
+      float: right; }
+    body div #offline {
+      padding: 1;
+      background: #f37d7d;
+      color: whitesmoke;
+      text-align: center;
+      font-size: 10pt; }
+  body .hidden {
+    display: none; }
+  body .img-responsive {
+    max-width: 75%;
+    height: auto; }
+  body img.small-icon {
+    width: 60px;
+    height: 45px;
+    padding-right: 5px;
+    padding-left: 5px; }
+  body button.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s; }
+  body button.custom {
+    background-color: #4fa9f8;
+    color: white; }
+  body li.menu {
+    cursor: pointer;
+    transition: 0.4s; }
+  body li.dictionary {
+    float: left;
+    display: block;
+    line-height: 15pt;
+    background-color: gray;
+    color: white;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5%; }
+  body ul.dictionary {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; }
+  body #clear_text {
+    font-family: 'Indie Flower', cursive;
+    font-size: 15pt; }
+  body p {
+    color: gray; }
+    body p.lodified {
+      font-family: 'Indie Flower', cursive;
+      font-size: 20pt; }
+  body footer {
+    width: 80%;
+    text-align: center;
+    font-size: 10pt; }
+  body span.small_icon {
+    font-size: 15pt;
+    padding-right: 10px;
+    color: #4fa9f8; }
+  @media only screen and (min-width: 960px) {
+    body {
+      /* styles for browsers larger than 960px; */ }
+      body .img-responsive {
+        max-width: 60%;
+        height: 300px; } }
+  @media only screen and (min-width: 1440px) {
+    body {
+      /* styles for browsers larger than 1440px; */ } }
+  @media only screen and (min-width: 2000px) {
+    body {
+      /* for sumo sized (mac) screens */ } }
+  @media only screen and (max-device-width: 480px) {
+    body {
+      /* styles for mobile browsers smaller than 480px; (iPhone) */ } }
+  @media only screen and (device-width: 768px) {
+    body {
+      /* default iPad screens */ } }
+  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: portrait) {
+    body {
+      /* For portrait layouts only */ } }
+  @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation: landscape) {
+    body {
+      /* For landscape layouts only */ } }

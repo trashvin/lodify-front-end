@@ -1,0 +1,162 @@
+body {
+    background-color: black;
+    div{
+        &.spacer-h-50 {
+            height: 50px;
+        }
+        &.jumbotron {
+            &.main {
+                background: whitesmoke;
+            }
+        }
+        &.dictionary {
+            font-family: 'Indie Flower', cursive;
+            font-size: 12pt;
+        }  
+        &.sharing {
+            position:relative;
+            bottom:25px;
+            padding-right: 5px;
+            float: right;
+        }
+        #offline {
+            padding: 1;
+            background: rgb(243, 125, 125);
+            color:whitesmoke;
+            text-align: center;
+            font-size: 9pt;
+        }
+        border-style: none;
+    }
+    .hidden {
+        display: none;
+    }
+    .img-responsive {
+        max-width: 75%;
+        height: auto;
+    } 
+    img.small-icon {
+        width: 60px;
+        height: 45px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+    
+    button {
+        &.accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+        }  
+        &.custom {
+            background-color: rgb(79, 169, 248);
+            color: white;
+        }  
+    }
+    li {
+        &.menu {
+            cursor: pointer;
+            transition: 0.4s;
+        }
+        &.dictionary {
+            float:left;
+            display: block;
+            line-height: 15pt;
+            background-color: gray;
+            color:white;
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5%;
+        }
+        &.top_five {
+            float:left;
+            display: block;
+            line-height: 10pt;
+            background-color: gray;
+            color:white;
+            margin: 2px;
+            padding: 2px;
+            border-radius: 10%;
+            font-style: italic;
+            font-size: 8pt;
+        }
+        
+    } 
+    ul {
+        &.dictionary {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;  
+        }    
+    }
+    #clear_text {
+        font-family: 'Indie Flower', cursive;
+        font-size: 15pt;
+    } 
+    p {
+        color: gray;
+        &.lodified {
+            font-family: 'Indie Flower', cursive;
+            font-size: 20pt;
+        }
+        
+    }
+    label {
+        &.top_five {
+            line-height: 10pt;
+            background-color: gray;
+            color:white;
+            margin: 2px;
+            padding: 2px;
+            border-radius: 10%;
+            font-style: italic;
+            font-size: 8pt;
+        }
+    }
+    footer {
+        width: 80%;
+        text-align: center;
+        font-size: 10pt;
+    }
+    span {
+        &.small_icon {
+            font-size:15pt;
+            padding-right:10px;
+            color: rgb(79, 169, 248);
+        }
+    }
+    @media only screen and (min-width:960px){
+        /* styles for browsers larger than 960px; */
+        .img-responsive {
+            max-width: 60%;
+            height: 300px;
+        }    
+    }
+    @media only screen and (min-width:1440px){
+        /* styles for browsers larger than 1440px; */
+    }
+    @media only screen and (min-width:2000px){
+        /* for sumo sized (mac) screens */
+    }
+    @media only screen and (max-device-width:480px){
+       /* styles for mobile browsers smaller than 480px; (iPhone) */
+    }
+    @media only screen and (device-width:768px){
+       /* default iPad screens */
+    }
+    /* different techniques for iPad screening */
+    @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+      /* For portrait layouts only */
+    }
+
+    @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+      /* For landscape layouts only */
+    }
+}
