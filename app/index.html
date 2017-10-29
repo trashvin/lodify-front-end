@@ -34,7 +34,7 @@
                     </div>
                     <div id="offline" class="alert-danger hidden">Lodify attempting to connect to server or server offline.</div>
                     <div class="alert-warning" style="text-align:center;" id="browser_alert">
-                        <small >If you have an old browser or slow internet connect, switch to the <a href="lite.html">uglified version.</a> </small>
+                        <small >If you have an old browser or slow internet connection, switch to the <a href="lite.html">uglified version.</a> </small>
                     </div>
                     <div class="card-block p-2 hidden" id="result_div" style="background:whitesmoke">     
                     <p id="result_text" class="lodified" style="background:whitesmoke;border-style:none"></p>
@@ -59,11 +59,11 @@
                         <div>
                             <label class="form-check-label" >
                                 <input type="checkbox" class="form-check-input" id="include_suggestions" onclick="rebuildDictionary()">
-                                Include Suggestions
+                                include suggestions
                             </label>
                         </div>   
                         <div class="alert alert-warning hidden" role="alert" id="warning">
-                            <small>Until we have included a fool proof way to prevent bots from submitting new terms, 
+                            <small>Our method to prevent bots from submitting new terms is not fool proof, 
                                 expect garbage words to be included in the suggestions. </small>
                        </div>   
                        
@@ -71,10 +71,10 @@
                     <div id="twitter-button" class="p-2" style="background: whitesmoke;text-align:center">
                         <!--a class="twitter-share-button">Tweet Me!</a-->
                         
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=http://trashvin.github.io/ilodify" target="_blank">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=http://trashvin.github.io/lodify" target="_blank">
                                     <img src="./images/share_fb.jpeg" width="49%" style="max-height:40px"/>
                                 </a>
-                                <a href="https://twitter.com/intent/tweet?text=http://trashvin.github.io/ilodify" target="_blank">
+                                <a href="https://twitter.com/intent/tweet?text=http://trashvin.github.io/lodify" target="_blank">
                                     <img src="./images/share_twt.jpeg" width="49%" style="max-height:40px"/>
                                 </a>
                         
@@ -137,7 +137,7 @@
                                         <li>i'am a lodi master, how to i add a new word?</li>
                                         <p>
                                             <small>
-                                                go to <a href="#add_new_word">contribute new term</a> section. submitted words are initially marked as suggestions ( hey, we dont want to 
+                                                go to the <a href="#add_new_word">contribute new term</a> section. submitted words are initially marked as suggestions ( hey, we dont want to 
                                                 pollute an already polluted terms). it becomes official once
                                                 verified by our team of...         
                                             </small>
@@ -201,7 +201,7 @@
         <script>
             $(".tweet_this").click(function () {
                 var lodi_text = document.getElementById("result_text").innerHTML;
-                $(this).attr("href", 'https://twitter.com/intent/tweet?text=' + lodi_text + " via i.lodi.fy");
+                $(this).attr("href", 'https://twitter.com/intent/tweet?text=' + lodi_text + " via lodify");
             });
             $("#add_new_word").click(function () {
                 $("#ind_1").toggle();

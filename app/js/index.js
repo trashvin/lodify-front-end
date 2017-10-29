@@ -1,5 +1,6 @@
-import "./styles/styles.scss";
-import * as lodifier from "./js/lodifier";
+import "../styles/styles.scss";
+import * as lodifier from "./lodifier";
+import * as localDB from "./data";
 let stitch;
 let client;
 let db;
@@ -68,15 +69,18 @@ function getTerms() {
 const addTerm = (term, lodi) => {
   return db
     .collection("dict")
-    .insertOne({ _id: term, lodi: lodi, meaning: "", approved: 0, count: 0 });
+    .insertOne({ _id: term, lodi: lodi, example: "", approved: 0, count: 0,flagged:0 });
 };
 const add =() => {
   const lodi = document.getElementById("new_term").value;
   const term = document.getElementById("equivalent").value;
+  // remove invalid chars
+  term = term.replace(/[^A-Za-z]/g, "");
+  lodi = lodi.replace(/[^A-Za-z]/g, "");
   console.log(term + "|" + lodi);
   stitchLogin()
     .then(() => {
-      addTerm(term, lodi)
+      addTerm(term.toLowerCase(), lodi.toLowerCase())
         .then(() => {
           console.log("Adding Done");
           document.getElementById("equivalent").value = "";
@@ -235,6 +239,11 @@ const getTopTerms = () => {
   // top.className = "dictionary";
   // top.id = "top_list";
   let count = 0;
+  // let entry = "<span class='badge badge-light'>top terms :</span>"
+  const label = document.createElement("label");
+  label.innerHTML ="<span class='badge badge-light'>top </span> terms: ";
+  label.className="top_five";
+  top.appendChild(label);
   consolidated.forEach( word => {
     let approved = word.approved === 1 ? true : false;
     if (include) {
@@ -290,17 +299,33 @@ const verifyCheck = (val) => {
     return false;
   }
 }
+// const getOfflineDB = () => {
+//   const offlineDB = [];
+//   for (const key in offlineTerms) {
+//     offlineDB.push({
+//       _id: key,
+//       lodi: offlineTerms[key],
+//       meaning: "",
+//       approved: 1,
+//       count: 0
+//     });
+//   }
+//   console.log("OfflineDB:", offlineDB);
+//   return offlineDB;
+// }
 const getOfflineDB = () => {
   const offlineDB = [];
-  for (const key in offlineTerms) {
+  localDB.offline_terms.forEach( term => {
     offlineDB.push({
-      _id: key,
-      lodi: offlineTerms[key],
-      meaning: "",
-      approved: 1,
-      count: 0
+      _id : term._id,
+      lodi : term.lodi,
+      example : term.example,
+      count : term.count,
+      approved : term.approved,
+      type : term.type,
+      flagged : term.flagged,
     });
-  }
+  });
   console.log("OfflineDB:", offlineDB);
   return offlineDB;
 }
