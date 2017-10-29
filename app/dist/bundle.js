@@ -127,7 +127,7 @@ function getTerms() {
     }
     __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["b" /* initialize */](data);
     buildDictionary(data);
-    getTopFiveTerms();
+    getTopTerms();
     $("#offline").hide();
   }).catch(err => {
     clear_lodictionary();
@@ -240,7 +240,7 @@ const lodify = () => {
 const rebuildDictionary = () => {
   clear_lodictionary();
   buildDictionary(data);
-  __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["d" /* rebuildTable */](data, includeSuggestions("include_suggstions_1"));
+  __WEBPACK_IMPORTED_MODULE_1__js_lodifier__["d" /* rebuildTable */](data, includeSuggestions());
 };
 const includeSuggestions = () => {
   return document.getElementById("include_suggestions").checked;
@@ -256,9 +256,9 @@ const clear_lodictionary = () => {
     console.log(e);
   }
 };
-const clearTopFive = () => {
+const clearTopList = () => {
   try {
-    const top_div = document.getElementById("top_five");
+    const top_div = document.getElementById("top_list");
     // remove the child
     while (top_div.hasChildNodes()) {
       top_div.removeChild(top_div.firstChild);
@@ -284,22 +284,21 @@ const reverseLodify = () => {
     loadOnlineTerms();
   }
 };
-const getTopFiveTerms = () => {
-  console.log("updating top 5");
+const getTopTerms = () => {
+  console.log("updating top list");
   const include = includeSuggestions();
-  const consolidated = consolidate(data);
+  let consolidated = consolidate(data);
+  consolidated = consolidated.slice(0, 15);
   consolidated.sort((a, b) => {
     return b.counts - a.counts;
   });
-  //get 10 in case suggestins were included
-  const top_five = consolidated.slice(0, 10);
-  console.log("10 :", top_five);
-  clearTopFive();
+  console.log("Consolidated :", consolidated);
+  clearTopList();
   const top = document.createElement("p");
   // top.className = "dictionary";
   // top.id = "top_list";
   let count = 0;
-  top_five.forEach(word => {
+  consolidated.forEach(word => {
     let approved = word.approved === 1 ? true : false;
     if (include) {
       approved = true;
@@ -318,7 +317,7 @@ const getTopFiveTerms = () => {
       item.innerHTML = entry;
       item.className = "top_five";
       count += 1;
-      if (count <= 5) {
+      if (count <= 10 || word.counts >= 0) {
         top.appendChild(item);
       }
     }

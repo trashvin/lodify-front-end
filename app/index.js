@@ -54,7 +54,7 @@ function getTerms() {
       }
       lodifier.initialize(data);
       buildDictionary(data);
-      getTopFiveTerms();
+      getTopTerms();
       $("#offline").hide();
     })
     .catch(err => {
@@ -68,7 +68,7 @@ function getTerms() {
 const addTerm = (term, lodi) => {
   return db
     .collection("dict")
-    .insertOne({ _id: term, lodi: lodi, meaning: "", approved: 0, counts: 0 });
+    .insertOne({ _id: term, lodi: lodi, meaning: "", approved: 0, count: 0 });
 };
 const add =() => {
   const lodi = document.getElementById("new_term").value;
@@ -111,7 +111,7 @@ const updateCount = () => {
 const update = (term) => {
   return db
   .collection("dict")
-  .updateOne({_id:term},{$inc:{counts:1}},{upsert:false});
+  .updateOne({_id:term},{$inc:{count:1}},{upsert:false});
 }
 const buildDictionary = () => {
   const include = includeSuggestions();
@@ -177,7 +177,7 @@ const lodify = () => {
 const rebuildDictionary = () => {
   clear_lodictionary();
   buildDictionary(data);
-  lodifier.rebuildTable(data, includeSuggestions("include_suggstions_1"));
+  lodifier.rebuildTable(data, includeSuggestions());
 };
 const includeSuggestions = () => {
   return document.getElementById("include_suggestions").checked;
@@ -193,9 +193,9 @@ const clear_lodictionary = () => {
     console.log(e);
   }
 };
-const clearTopFive = () => {
+const clearTopList = () => {
   try {
-    const top_div = document.getElementById("top_five");
+    const top_div = document.getElementById("top_list");
     // remove the child
     while (top_div.hasChildNodes()) {
       top_div.removeChild(top_div.firstChild);
@@ -221,22 +221,21 @@ const reverseLodify = () => {
     loadOnlineTerms(); 
   }
 }
-const getTopFiveTerms = () => {
-  console.log("updating top 5");
+const getTopTerms = () => {
+  console.log("Updating top list");
   const include = includeSuggestions();
-  const consolidated = consolidate(data);
+  let consolidated = consolidate(data);
   consolidated.sort((a,b) => {
-    return b.counts - a.counts;
+    return b.count - a.count;
   });
-  //get 10 in case suggestins were included
-  const top_five = consolidated.slice(0,10);
-  console.log("10 :",top_five);
-  clearTopFive();
+  consolidated = consolidated.slice(0,15);
+  console.log("Consolidated :", consolidated);
+  clearTopList();
   const top = document.createElement("p");
   // top.className = "dictionary";
   // top.id = "top_list";
   let count = 0;
-  top_five.forEach( word => {
+  consolidated.forEach( word => {
     let approved = word.approved === 1 ? true : false;
     if (include) {
       approved = true;
@@ -247,7 +246,7 @@ const getTopFiveTerms = () => {
       if (word.approved === 0) {
         entry = entry + " **";
       }
-      entry = entry + ` <span class='badge badge-light'>${word.counts}</span>`;
+      entry = entry + ` <span class='badge badge-light'>${word.count}</span>`;
       // const span = document.createElement("span");
       // span.className ="badge badge-light";
       // span.innerText= +word.counts;
@@ -255,20 +254,20 @@ const getTopFiveTerms = () => {
       item.innerHTML = entry;
       item.className="top_five";
       count += 1;
-      if ( count <= 5 ) {
+      if ( count <= 10 && word.count > 0 ) {
         top.appendChild(item);
       }
       
     }
   });
-  document.getElementById("top_five").appendChild(top);
+  document.getElementById("top_list").appendChild(top);
 }
 const consolidate = () => {
   let result = [];
   data.forEach( word => {
     const found = result.findIndex(i => i.lodi === word.lodi);
     if ( found >= 0) {
-      result[found].counts += word.counts;
+      result[found].count += word.count;
     } else {
       result.push(word);
     }
@@ -284,7 +283,6 @@ const showCheckImage = () => {
 }
 const verifyCheck = (val) => {
   const checks = {0:30,1:23,2:15,3:36,4:9,5:86,6:11,7:35,8:44,9:52};
-  console.log(data);
   console.log(checks[check_image_index]);
   if ( checks[check_image_index] === +data) {
     return true;
@@ -300,7 +298,7 @@ const getOfflineDB = () => {
       lodi: offlineTerms[key],
       meaning: "",
       approved: 1,
-      counts: 0
+      count: 0
     });
   }
   console.log("OfflineDB:", offlineDB);

@@ -62,6 +62,7 @@ export const reverseLodify = (data) => {
   counter = [];
 
   words.forEach(element => {
+    console.log(element);
     element = element.replace(/[^A-Za-z]/g, "");
     let translated_word = getKey(element);
     console.log("reversi ", translated_word);
