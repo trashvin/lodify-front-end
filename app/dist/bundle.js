@@ -143,8 +143,8 @@ const addTerm = (term, lodi) => {
   return db.collection("dict").insertOne({ _id: term, lodi: lodi, example: "", approved: 0, count: 0, flagged: 0 });
 };
 const add = () => {
-  const lodi = document.getElementById("new_term").value;
-  const term = document.getElementById("equivalent").value;
+  let lodi = document.getElementById("new_term").value;
+  let term = document.getElementById("equivalent").value;
   // remove invalid chars
   term = term.replace(/[^A-Za-z]/g, "");
   lodi = lodi.replace(/[^A-Za-z]/g, "");
