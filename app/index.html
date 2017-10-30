@@ -4,6 +4,21 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108867590-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108867590-1');
+    </script>
+
+    <meta property="og:image" content="https://trashvin.github.io/lodify/images/lodify.gif"/>
+    <meta property="og:description" content="a fun web app that translate a normal accepatable phrase in filipino to a weird sounding "lodified" phrase."/>
+    <meta property="og:url" content="http://trashvin.github.io/lodify" />
+    <meta property="og:title" content="lodify | a kafənātəd project" />
+
     <title>lodify | a kafənātəd project </title>
     <script src="https://s3.amazonaws.com/stitch-sdks/js/library/stable/stitch.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
@@ -17,12 +32,15 @@
     <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
     <link rel="stylesheet" href="./dist/main.bundle.css">
     <link rel="shortcut icon" href="./images/favicon.ico" />
-    
+
 </head>
 
 <body onload="init()" style="background-image: url('./images/millenials.jpg');">
-    
-    <a href="https://github.com/you"><img style="position: absolute; top: 0; left: 0; border: 0; z-index:2" src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png"></a>
+
+    <a href="https://github.com/you">
+        <img style="position: absolute; top: 0; left: 0; border: 0; z-index:2" src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67"
+            alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png">
+    </a>
     <div class="container fluid pt-3 pb-3">
         <div class="row"></div>
         <div class="row">
@@ -34,10 +52,12 @@
                     </div>
                     <div id="offline" class="alert-danger hidden">Lodify attempting to connect to server or server offline.</div>
                     <div class="alert-warning" style="text-align:center;" id="browser_alert">
-                        <small >If you have an old browser or slow internet connection, switch to the <a href="lite.html">uglified version.</a> </small>
+                        <small>If you have an old browser or slow internet connection, switch to the
+                            <a href="lite.html">uglified version.</a>
+                        </small>
                     </div>
-                    <div class="card-block p-2 hidden" id="result_div" style="background:whitesmoke">     
-                    <p id="result_text" class="lodified" style="background:whitesmoke;border-style:none"></p>
+                    <div class="card-block p-2 hidden" id="result_div" style="background:whitesmoke">
+                        <p id="result_text" class="lodified" style="background:whitesmoke;border-style:none"></p>
                         <p style="text-align: right; font-size:10pt;background:whitesmoke">
                             <a class="tweet_this" href="#" target="_blank">
                                 <img src="./images/twitter.png" width="15px" height="12px" /> Tweet this!
@@ -51,34 +71,33 @@
                             <textarea class="form-control" id="clear_text" rows="3" style="background-image:url('./images/lorem.jpg') "></textarea>
                         </div>
                         <div id="top_list" style="text-align: center">
-                            
-                        </div>      
+
+                        </div>
                         <button type="submit" class="btn custom" onclick="lodify()">lodify</button>
                         <button type="submit" class="btn btn-secondary" onclick="reverseLodify()">reverse lodify</button>
                         <button type="submit" class="btn btn-secondary" style="float:right" id="clear_button">clear</button>
                         <div>
-                            <label class="form-check-label" >
-                                <input type="checkbox" class="form-check-input" id="include_suggestions" onclick="rebuildDictionary()">
-                                include suggestions
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="include_suggestions" onclick="rebuildDictionary()"> include suggestions
                             </label>
-                        </div>   
+                        </div>
                         <div class="alert alert-warning hidden" role="alert" id="warning">
-                            <small>Our method to prevent bots from submitting new terms is not fool proof, 
-                                expect garbage words to be included in the suggestions. </small>
-                       </div>   
-                       
+                            <small>Our method to prevent bots from submitting new terms is not fool proof, expect garbage words
+                                to be included in the suggestions. </small>
+                        </div>
+
                     </div>
                     <div id="twitter-button" class="p-2" style="background: whitesmoke;text-align:center">
                         <!--a class="twitter-share-button">Tweet Me!</a-->
-                        
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=http://trashvin.github.io/lodify" target="_blank">
-                                    <img src="./images/share_fb.jpeg" width="49%" style="max-height:40px"/>
-                                </a>
-                                <a href="https://twitter.com/intent/tweet?text=http://trashvin.github.io/lodify" target="_blank">
-                                    <img src="./images/share_twt.jpeg" width="49%" style="max-height:40px"/>
-                                </a>
-                        
-                        
+
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=http://trashvin.github.io/lodify" target="_blank">
+                            <img src="./images/share_fb.jpeg" width="49%" style="max-height:40px" />
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text=http://trashvin.github.io/lodify" target="_blank">
+                            <img src="./images/share_twt.jpeg" width="49%" style="max-height:40px" />
+                        </a>
+
+
                     </div>
                     <hr class="p-0 m-0" />
                     <div class="card-block">
@@ -101,7 +120,7 @@
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="answer" placeholder="Enter Your Answer Here" size="5">
                                         <small class="form-text text-muted">Prove to us you are human enough to know math!</small>
-                                     </div>                                    
+                                    </div>
 
                                 </form>
                                 <button type="button" class="btn btn-secondary btn-sm float-right" onclick="add()">Submit</button>
@@ -124,22 +143,26 @@
                                         <p>
                                             <small>a simple web app that translate human sentences to ...</small>
                                         </p>
-                                        <li>where did you get these  weird words anyway?</li>
+                                        <li>where did you get these weird words anyway?</li>
                                         <p>
-                                            <small>"dont us!", ask <a href="https://www.fhm.com.ph/be-a-better-man/mens-stuff/lodi-werpa-petmalu-explained-a00195-20171011">them...</a> </small>
+                                            <small>"dont us!", ask
+                                                <a href="https://www.fhm.com.ph/be-a-better-man/mens-stuff/lodi-werpa-petmalu-explained-a00195-20171011">them...</a>
+                                            </small>
                                         </p>
                                         <li>i dont understand a thing, teach me how to lodi</li>
                                         <p>
                                             <small>
-                                                we have a a section called <a href="#lodictionary">Thesaurus</a> made just for you.
+                                                we have a a section called
+                                                <a href="#lodictionary">Thesaurus</a> made just for you.
                                             </small>
                                         </p>
                                         <li>i'am a lodi master, how to i add a new word?</li>
                                         <p>
                                             <small>
-                                                go to the <a href="#add_new_word">contribute new term</a> section. submitted words are initially marked as suggestions ( hey, we dont want to 
-                                                pollute an already polluted terms). it becomes official once
-                                                verified by our team of...         
+                                                go to the
+                                                <a href="#add_new_word">contribute new term</a> section. submitted words are initially marked as
+                                                suggestions ( hey, we dont want to pollute an already polluted terms). it
+                                                becomes official once verified by our team of...
                                             </small>
                                         </p>
                                         <li>what are suggestions?</li>
@@ -148,23 +171,29 @@
                                         </p>
                                         <li>what is reverse lodify?</li>
                                         <p>
-                                            <small>the reverse of lodify, as simple as that. its for those trying to understand a lodified phrase. yes, we are referring to you titos, titas, lolos, and lolas. </small>
+                                            <small>the reverse of lodify, as simple as that. its for those trying to understand
+                                                a lodified phrase. yes, we are referring to you titos, titas, lolos, and
+                                                lolas. </small>
                                         </p>
                                         <li>why is the app keep bugging me with server offline message?</li>
                                         <p>
-                                            <small>app seems to have problem getting data from server, in the meanwhile, it will use a local collection of terms which may be outdated. 
-                                                dont always blame us for your slow internet.
+                                            <small>app seems to have problem getting connectiong to the server, in the meanwhile,
+                                                it will use a local collection of terms which may be outdated. dont always
+                                                blame us for your slow internet.
                                             </small>
                                         </p>
                                         <li>your app sucks, what do i do?</li>
                                         <p>
-                                            <small>report issues or request features to our <a href="https://github.com/trashvin/lodify/issues/new">github </a> location. better yet, issue a pull request.</small>
+                                            <small>report issues or request features to our
+                                                <a href="https://github.com/trashvin/lodify/issues/new">github </a> location. better yet, issue a pull request.</small>
                                         </p>
                                         <li>any limitations?</li>
                                         <p id="#browser_issue">
-                                            <small>our "lodifier" still sucks and mongodb-stitch is still in beta. expect the unexcpected. oh, btw,
-                                                this was tested only on limited browser. if it does not work on your browser, ditch it and use another one or better yet
-                                                ry the <a href="http://lodify.bitballoon.com">uglified version</a>.
+                                            <small>our "lodifier" still sucks and mongodb-stitch is still in beta. expect the unexcpected.
+                                                oh, btw, this was tested only on a limited number of browsers. if it does
+                                                not work on your browser, ditch it and use another one, or better yet try
+                                                the
+                                                <a href="lite.html">uglified version</a>. and we mean, ugly.
                                             </small>
                                         </p>
                                     </ul>
@@ -234,11 +263,12 @@
                 $("#clear_text").focus();
                 $("#result_div").hide();
             });
-            $("#include_suggestions").click(function() {
+            $("#include_suggestions").click(function () {
                 $("#warning").toggle();
             })
         </script>
         <script src="dist/bundle.js" type="text/javascript"></script>
-        
+
 </body>
+
 </html>
