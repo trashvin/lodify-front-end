@@ -85,7 +85,7 @@ let data = [];
 let online = false;
 let check_image_index;
 
-const connect = () => {
+const connect = function () {
   try {
     console.log("connecting to server.....");
     stitch = window.stitch;
@@ -97,7 +97,7 @@ const connect = () => {
     return false;
   }
 };
-const init = () => {
+const init = function () {
   // clear dictionary display and initially show offline
   clear_lodictionary();
   $("#offline").show();
@@ -115,12 +115,12 @@ const init = () => {
 function stitchLogin() {
   return client.login();
 }
-const loadOnlineTerms = () => {
+const loadOnlineTerms = function () {
   stitchLogin().then(getTerms);
 };
 function getTerms() {
   const include = includeSuggestions();
-  db.collection("dict").find().then(result => {
+  db.collection("dict").find().then(function (result) {
     data = result;
     clear_lodictionary();
     if (data.length === 0) {
@@ -131,7 +131,7 @@ function getTerms() {
     buildDictionary(data);
     getTopTerms();
     $("#offline").hide();
-  }).catch(err => {
+  }).catch(function (err) {
     clear_lodictionary();
     $("#offline").show();
     console.log(err);
@@ -139,18 +139,18 @@ function getTerms() {
     buildDictionary(data);
   });
 }
-const addTerm = (term, lodi) => {
+const addTerm = function (term, lodi) {
   return db.collection("dict").insertOne({ _id: term, lodi: lodi, example: "", approved: 0, count: 0, flagged: 0 });
 };
-const add = () => {
+const add = function () {
   let lodi = document.getElementById("new_term").value;
   let term = document.getElementById("equivalent").value;
   // remove invalid chars
   term = term.replace(/[^A-Za-z]/g, "");
   lodi = lodi.replace(/[^A-Za-z]/g, "");
   console.log(term + "|" + lodi);
-  stitchLogin().then(() => {
-    addTerm(term.toLowerCase(), lodi.toLowerCase()).then(() => {
+  stitchLogin().then(function () {
+    addTerm(term.toLowerCase(), lodi.toLowerCase()).then(function () {
       console.log("Adding Done");
       document.getElementById("equivalent").value = "";
       document.getElementById("new_term").value = "";
@@ -158,36 +158,36 @@ const add = () => {
       $("#ind_1A").toggle();
       $("#submit_new").toggle();
       getTerms();
-    }).catch(err => {
+    }).catch(function (err) {
       console.log("Failed", err);
       alert("Failed adding the word.");
     });
-  }).catch(err => {
+  }).catch(function (err) {
     console.log(err);
     alert("Failed adding the word.");
   });
 };
-const updateCount = () => {
+const updateCount = function () {
   const counts = __WEBPACK_IMPORTED_MODULE_1__lodifier__["a" /* getCounter */]();
-  stitchLogin().then(() => {
-    counts.forEach(word => {
-      update(word).then(res => {
+  stitchLogin().then(function () {
+    counts.forEach(function (word) {
+      update(word).then(function (res) {
         console.log(`${word} count updated :`, res);
-      }).catch(err => {
+      }).catch(function (err) {
         console.log("Failed Update", err);
       });
     }, _this);
   });
 };
-const update = term => {
+const update = function (term) {
   return db.collection("dict").updateOne({ _id: term }, { $inc: { count: 1 } }, { upsert: false });
 };
-const buildDictionary = () => {
+const buildDictionary = function () {
   const include = includeSuggestions();
   const list = document.createElement("ul");
   list.id = "dict_list";
   list.className = "dictionary";
-  data.sort((a, b) => {
+  data.sort(function (a, b) {
     const nameA = a.lodi.toUpperCase(); // ignore upper and lowercase
     const nameB = b.lodi.toUpperCase(); // ignore upper and lowercase
     if (nameA < nameB) {
@@ -225,7 +225,7 @@ const buildDictionary = () => {
     document.getElementById("lodictionary").appendChild(note);
   }
 };
-const lodify = () => {
+const lodify = function () {
   const include = includeSuggestions("include_suggstions_1");
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
@@ -242,15 +242,15 @@ const lodify = () => {
     loadOnlineTerms();
   }
 };
-const rebuildDictionary = () => {
+const rebuildDictionary = function () {
   clear_lodictionary();
   buildDictionary(data);
   __WEBPACK_IMPORTED_MODULE_1__lodifier__["d" /* rebuildTable */](data, includeSuggestions());
 };
-const includeSuggestions = () => {
+const includeSuggestions = function () {
   return document.getElementById("include_suggestions").checked;
 };
-const clear_lodictionary = () => {
+const clear_lodictionary = function () {
   try {
     const dict_div = document.getElementById("lodictionary");
     // remove the child
@@ -261,7 +261,7 @@ const clear_lodictionary = () => {
     console.log(e);
   }
 };
-const clearTopList = () => {
+const clearTopList = function () {
   try {
     const top_div = document.getElementById("top_list");
     // remove the child
@@ -272,7 +272,7 @@ const clearTopList = () => {
     console.log(e);
   }
 };
-const reverseLodify = () => {
+const reverseLodify = function () {
   const include = includeSuggestions("include_suggstions_1");
   console.log("Suggestions :", include);
   const clear = document.getElementById("clear_text").value;
@@ -289,11 +289,11 @@ const reverseLodify = () => {
     loadOnlineTerms();
   }
 };
-const getTopTerms = () => {
+const getTopTerms = function () {
   console.log("Updating top list");
   const include = includeSuggestions();
   let consolidated = consolidate(data);
-  consolidated.sort((a, b) => {
+  consolidated.sort(function (a, b) {
     return b.count - a.count;
   });
   consolidated = consolidated.slice(0, 15);
@@ -308,7 +308,7 @@ const getTopTerms = () => {
   label.innerHTML = "<span class='badge badge-light'>top </span> terms: ";
   label.className = "top_five";
   top.appendChild(label);
-  consolidated.forEach(word => {
+  consolidated.forEach(function (word) {
     let approved = word.approved === 1 ? true : false;
     if (include) {
       approved = true;
@@ -334,10 +334,12 @@ const getTopTerms = () => {
   });
   document.getElementById("top_list").appendChild(top);
 };
-const consolidate = () => {
+const consolidate = function () {
   let result = [];
-  data.forEach(word => {
-    const found = result.findIndex(i => i.lodi === word.lodi);
+  data.forEach(function (word) {
+    const found = result.findIndex(function (i) {
+      return i.lodi === word.lodi;
+    });
     if (found >= 0) {
       result[found].count += word.count;
     } else {
@@ -346,14 +348,14 @@ const consolidate = () => {
   });
   return result;
 };
-const showCheckImage = () => {
+const showCheckImage = function () {
   check_image_index = Math.round(Math.random() * 1000 % 9);
   document.getElementById("img_check").style.backgroundRepeat = "no-repeat";
   console.log("Random:", check_image_index);
   const image = `check_${check_image_index}.gif`;
   document.getElementById("img_check").style.backgroundImage = "url('./images/" + image + "')";
 };
-const verifyCheck = val => {
+const verifyCheck = function (val) {
   const checks = { 0: 30, 1: 23, 2: 15, 3: 36, 4: 9, 5: 86, 6: 11, 7: 35, 8: 44, 9: 52 };
   console.log(checks[check_image_index]);
   if (checks[check_image_index] === +data) {
@@ -362,9 +364,9 @@ const verifyCheck = val => {
     return false;
   }
 };
-const getOfflineDB = () => {
+const getOfflineDB = function () {
   const offlineDB = [];
-  __WEBPACK_IMPORTED_MODULE_2__data__["a" /* offline_terms */].forEach(term => {
+  __WEBPACK_IMPORTED_MODULE_2__data__["a" /* offline_terms */].forEach(function (term) {
     offlineDB.push({
       _id: term._id,
       lodi: term.lodi,
@@ -424,17 +426,21 @@ const dictionary = [];
 const valid_letter = /^[a-zA-Z]/;
 let translates;
 let counter = [];
-const initialize = data => {
+const initialize = function (data) {
   // translates= stitch.getAllTerms();
   console.log("translates from db", data);
-  data = data.filter(i => i.approved === 1);
+  data = data.filter(function (i) {
+    return i.approved === 1;
+  });
   buildTable(data);
 };
 /* harmony export (immutable) */ __webpack_exports__["b"] = initialize;
 
-const rebuildTable = (data, include) => {
+const rebuildTable = function (data, include) {
   if (!include) {
-    data = data.filter(i => i.approved === 1);
+    data = data.filter(function (i) {
+      return i.approved === 1;
+    });
   }
   translate_table.clear();
   buildTable(data);
@@ -442,7 +448,7 @@ const rebuildTable = (data, include) => {
 /* harmony export (immutable) */ __webpack_exports__["d"] = rebuildTable;
 
 function buildTable(data) {
-  data.forEach(element => {
+  data.forEach(function (element) {
     translate_table.set(element._id.toLowerCase(), element.lodi);
   });
   console.log("Translate_Table", translate_table);
@@ -450,15 +456,17 @@ function buildTable(data) {
 
 function splitAndLower(data) {
   const broken_text = data.trim().split(" ");
-  return broken_text.map(word => word.toLowerCase());
+  return broken_text.map(function (word) {
+    return word.toLowerCase();
+  });
 }
-const lodify = data => {
+const lodify = function (data) {
 
   let result = "";
   const words = splitAndLower(data);
   counter = [];
 
-  words.forEach(element => {
+  words.forEach(function (element) {
     console.log("element", element);
     element = element.replace(/[^A-Za-z]/g, "");
     let translated_word = translate_table.get(element);
@@ -482,13 +490,13 @@ const lodify = data => {
 };
 /* harmony export (immutable) */ __webpack_exports__["c"] = lodify;
 
-const reverseLodify = data => {
+const reverseLodify = function (data) {
 
   let result = "";
   const words = splitAndLower(data);
   counter = [];
 
-  words.forEach(element => {
+  words.forEach(function (element) {
     console.log(element);
     element = element.replace(/[^A-Za-z]/g, "");
     let translated_word = getKey(element);
@@ -511,7 +519,7 @@ const reverseLodify = data => {
 };
 /* harmony export (immutable) */ __webpack_exports__["e"] = reverseLodify;
 
-const getKey = word => {
+const getKey = function (word) {
   let foundKey;
   for (const [key, value] of translate_table.entries()) {
     if (value.trim().toLowerCase() === word.trim().toLowerCase()) {
@@ -521,7 +529,7 @@ const getKey = word => {
   }
   return foundKey;
 };
-const getCounter = () => {
+const getCounter = function () {
   console.log("Counter :", counter);
   return counter;
 };
