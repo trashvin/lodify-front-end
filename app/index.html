@@ -52,10 +52,14 @@
                     </div>
                     <div id="offline" class="alert-danger hidden">Lodify attempting to connect to server or server offline.</div>
                     <div class="alert-warning" style="text-align:center;" id="browser_alert">
-                        <small>If you have an old browser or slow internet connection, switch to the
+                        <small class=>If you have an old browser or slow internet connection, switch to the
                             <a href="lite.html">uglified version.</a>
+                            <a data-dismiss="alert" aria-label="Close" id="close_browser_warn">
+                                <span aria-hidden="true" style="cursor: pointer;">[&times;]</span>
+                            </a>
                         </small>
                     </div>
+                    <div class="pt-2" id="top_list" style="text-align: center;background:whitesmoke"> </div>                       
                     <div class="card-block p-2 hidden" id="result_div" style="background:whitesmoke">
                         <p id="result_text" class="lodified" style="background:whitesmoke;border-style:none"></p>
                         <p style="text-align: right; font-size:10pt;background:whitesmoke">
@@ -69,9 +73,6 @@
                     <div class="card-block p-2" style="background: whitesmoke">
                         <div class="form-group">
                             <textarea class="form-control" id="clear_text" rows="3" style="background-image:url('./images/lorem.jpg') "></textarea>
-                        </div>
-                        <div id="top_list" style="text-align: center">
-
                         </div>
                         <button type="submit" class="btn custom" onclick="lodify()">lodify</button>
                         <button type="submit" class="btn btn-secondary" onclick="reverseLodify()">reverse lodify</button>
@@ -265,7 +266,11 @@
             });
             $("#include_suggestions").click(function () {
                 $("#warning").toggle();
-            })
+            });
+            $("#close_browser_warn").click(function() {
+                $("#browser_alert").toggle();
+            });
+
         </script>
         <script src="dist/bundle.js" type="text/javascript"></script>
 
