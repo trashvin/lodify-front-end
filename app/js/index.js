@@ -343,3 +343,5 @@ window.init = init;
 window.rebuildDictionary = rebuildDictionary;
 window.add = add;
 window.showCheckImage = showCheckImage;
+
+// v2 starts
