@@ -20,7 +20,7 @@ module.exports = {
         loader: "babel-loader",
         query: {
           presets: ["es2015"],
-          plugins: ["transform-es2015-for-of","transform-es2015-arrow-functions"],
+          plugins: ["transform-es2015-for-of","transform-es2015-arrow-functions","transform-es2015-block-scoping"],
         }
       },
       { // sass / scss loader for webpack
