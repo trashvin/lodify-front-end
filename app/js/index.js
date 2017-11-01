@@ -332,7 +332,7 @@ window.lodify = lodify;
 window.reverseLodify = reverseLodify;
 window.init = init;
 window.rebuildDictionary = rebuildDictionary;
-// window.add = add;
-// window.showCheckImage = showCheckImage;
+window.add = add;
+window.showCheckImage = showCheckImage;
 
 // v2 starts
