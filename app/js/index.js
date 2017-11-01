@@ -10,7 +10,7 @@ let check_image_index;
 
 const connect = () => {
   try {
-    console.log("connecting to server.....");
+  console.log("connecting to server.....");
     stitch = window.stitch;
     client = new stitch.StitchClient("i-lodi-fy-uhhdc");
     db = client.service("mongodb", "mongodb-atlas").db("lodi");
@@ -32,7 +32,7 @@ const init = () => {
   // try to get online data
   online = connect();
   if ( online ) {
-    loadOnlineTerms();   
+     loadOnlineTerms();   
   }
 }
 function stitchLogin() {
@@ -170,11 +170,11 @@ const lodify = () => {
     document.getElementById("result_text").innerHTML = lodified;
     document.getElementById("result_text").className = "p-2 lodified";
     $("#result_div").show();
-    updateCount();  
   } else {
     alert("Oooooppps ! Empty text not allowed.");
   }
   if ( online ) {
+    updateCount();  
     loadOnlineTerms(); 
   }
 }
@@ -217,11 +217,12 @@ const reverseLodify = () => {
     document.getElementById("result_text").innerHTML = lodified;
     document.getElementById("result_text").className = "p-2 lodified";
     $("#result_div").show();
-    updateCount();
+    
   } else {
     alert("Oooooppps ! Empty text not allowed.");
   }
   if ( online ) {
+    updateCount();
     loadOnlineTerms(); 
   }
 }
@@ -312,36 +313,26 @@ const getOfflineDB = () => {
       flagged : term.flagged,
     });
   });
+  // for(let i = 0;i<localDB.offline_terms.length;i += 1) {
+  //   offlineDB.push({
+  //     _id : localDB.offline_terms[i]._id,
+  //     lodi : localDB.offline_terms[i].lodi,
+  //     example : localDB.offline_terms[i].example,
+  //     count : localDB.offline_terms[i].count,
+  //     approved : localDB.offline_terms[i].approved,
+  //     type : localDB.offline_terms[i].type,
+  //     flagged : localDB.offline_terms[i].flagged,
+  //   });
+  // };
   console.log("OfflineDB:", offlineDB);
   return offlineDB;
 }
-const offlineTerms = {
-  pare: "erp",
-  pre: "erp",
-  idol: "lodi",
-  idols: "lodis",
-  kain: "enka",
-  kaen: "enka",
-  salamat: "matsala",
-  bro: "orb",
-  bros: "orbs",
-  brother: "orb",
-  brothers: "orbs",
-  malupit: "petmalu",
-  malupet: "petmalu",
-  ambulance: "ecnalubma",
-  ambulansya: "ecnalubma"
-};
 
-
-//require("expose-loader?init");
-//exports["init"] = init;
-//module.exports = app;
 window.lodify = lodify;
 window.reverseLodify = reverseLodify;
 window.init = init;
 window.rebuildDictionary = rebuildDictionary;
-window.add = add;
-window.showCheckImage = showCheckImage;
+// window.add = add;
+// window.showCheckImage = showCheckImage;
 
 // v2 starts
