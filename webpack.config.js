@@ -19,8 +19,8 @@ module.exports = {
         exclude: /node_modules/,
         loader: "babel-loader",
         query: {
-          presets: ["es2016"],
-          plugins: ["transform-es2015-arrow-functions"]
+          presets: ["es2015"],
+          plugins: ["transform-es2015-for-of","transform-es2015-arrow-functions","transform-es2015-block-scoping"],
         }
       },
       { // sass / scss loader for webpack
