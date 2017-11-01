@@ -34,6 +34,7 @@ module.exports = {
       filename: "./app/dist/[name].bundle.css",
       allChunks: true
     }),
+    
     //Commented in dev ,Uglify >=0.4.6 dont support ES6
     /*
         new webpack.optimize.UglifyJsPlugin({
