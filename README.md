@@ -13,3 +13,6 @@ This is written for a MongoDB Stitch tutorial. View the article at https://trash
 + MongoDB Stitch
 + Bootstrap 4
 + Webpack
+
+## Note from Developer
+This repo is no longer maintained or updated.
